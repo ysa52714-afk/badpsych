@@ -430,6 +430,7 @@
     .reveal { opacity: 1; transform: none; }
   }
 
+
 /* NP_STYLE_START */
   .products-grid { display:grid; grid-template-columns:1fr 1fr; gap:11px; }
   .product-item { flex-direction:column !important; align-items:stretch !important; padding:0 !important; gap:0 !important; margin:0 !important; overflow:hidden; background:var(--dark3); border:1px solid rgba(230,57,70,0.18); border-radius:14px; position:relative; }
@@ -451,6 +452,13 @@
   .product-cta { display:block !important; background:var(--naver); color:#fff; font-weight:700; font-size:12px; text-align:center; padding:10px; letter-spacing:.3px; }
   .products-section { padding:18px 14px !important; }
   .section-head { margin-bottom:14px !important; }
+  /* 아이덴티티→상품 브릿지 */
+  .bridge { text-align:center; padding:34px 22px 4px; position:relative; z-index:1; }
+  .bridge-line { font-family:'Noto Serif KR',serif; font-size:19px; font-weight:800; line-height:1.5; color:var(--text); }
+  .bridge-line em { font-style:normal; color:var(--red-light); }
+  .bridge-sub { margin-top:11px; font-size:13px; line-height:1.75; color:var(--text-dim); }
+  .bridge-sub b { color:var(--red-light); font-weight:700; }
+  .bridge-arrow { margin-top:14px; font-size:20px; color:var(--red); }
 /* NP_STYLE_END */
 </style>
 </head>
@@ -531,6 +539,8 @@
      ============================================================ -->
 
 <!-- PRODUCTS_START -->
+<div class="bridge"><div class="bridge-line">마음의 <em>원인</em>을 알았다면,<br>이제 바꿀 차례입니다</div><div class="bridge-sub">지친 하루를 다독일 멘탈케어템,<br><b>나쁜심리학이 직접 골랐습니다</b></div><div class="bridge-arrow">▾</div></div>
+
 <section class="products-section reveal">
   <div class="section-head">
     <div class="section-label">FOR SLEEP</div>
