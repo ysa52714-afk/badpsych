@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>나쁜심리학 | 오늘의 심리 처방 & 멘탈케어 아이템</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700;900&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+
+  :root {
+    --red: #E63946;
+    --red-light: #FF5A5F;
+    --red-dark: #9B1B22;
+    --black: #0A0A0A;
+    --dark2: #161616;
+    --dark3: #1F1F1F;
+    --text: #F0E8E8;
+    --text-dim: #9A8A8A;
+    --naver: #03C75A;
+    --naver-dark: #02A64A;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--text);
+    font-family: 'Noto Sans KR', sans-serif;
+    overflow-x: hidden;
+    max-width: 480px;
+    margin: 0 auto;
+    min-height: 100vh;
+    word-break: keep-all;
+    line-break: strict;
+  }
+
+  /* ── 움직이는 배경(모션 그래픽) ── */
+  .bg-fx {
+    position: fixed;
+    top: 0; left: 50%; transform: translateX(-50%);
+    width: 480px; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .bg-fx::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse at 30% 8%, rgba(230,57,70,0.10) 0%, transparent 50%),
+      radial-gradient(ellipse at 70% 92%, rgba(3,199,90,0.04) 0%, transparent 50%);
+  }
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(40px);
+    opacity: 0.35;
+    animation: drift 18s ease-in-out infinite;
+  }
+  .orb.o1 { width: 220px; height: 220px; background: rgba(230,57,70,0.30); top: -40px; left: -60px; }
+  .orb.o2 { width: 180px; height: 180px; background: rgba(155,27,34,0.35); bottom: 12%; right: -50px; animation-delay: -6s; animation-duration: 22s; }
+  .orb.o3 { width: 140px; height: 140px; background: rgba(255,90,95,0.22); top: 45%; left: 30%; animation-delay: -11s; animation-duration: 26s; }
+
+  @keyframes drift {
+    0%,100% { transform: translate(0,0) scale(1); }
+    33% { transform: translate(40px,30px) scale(1.15); }
+    66% { transform: translate(-30px,20px) scale(0.9); }
+  }
+
+  /* 스크롤 진행 바 */
+  .scroll-bar {
+    position: fixed; top: 0; left: 50%; transform: translateX(-50%);
+    height: 3px; width: 0%; max-width: 480px;
+    background: linear-gradient(90deg, var(--red-dark), var(--red), var(--red-light));
+    z-index: 200;
+    transition: width 0.1s linear;
+    box-shadow: 0 0 10px rgba(230,57,70,0.6);
+  }
+
+  /* ── 헤더 ── */
+  .header {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 48px 20px 34px;
+    background: linear-gradient(180deg, rgba(230,57,70,0.08) 0%, transparent 100%);
+    border-bottom: 1px solid rgba(230,57,70,0.15);
+  }
+
+  .header-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(230,57,70,0.14);
+    border: 1px solid rgba(230,57,70,0.35);
+    color: var(--red-light);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    padding: 6px 15px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    animation: fadeDown 0.7s ease both, glowPulse 3s ease-in-out infinite 1s;
+  }
+  .header-badge .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--red-light);
+    box-shadow: 0 0 8px var(--red-light);
+    animation: blink 1.4s infinite;
+  }
+
+  .header-title {
+    font-family: 'Noto Serif KR', serif;
+    font-size: clamp(24px, 6.6vw, 31px);
+    font-weight: 900;
+    line-height: 1.4;
+    margin-bottom: 14px;
+    padding: 0 6px;
+    animation: fadeDown 0.7s 0.1s ease both;
+  }
+
+  .header-title em {
+    font-style: normal;
+    background: linear-gradient(110deg, var(--red-light) 0%, #fff 25%, var(--red) 50%, var(--red-light) 75%, var(--red-dark) 100%);
+    background-size: 250% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmer 4s linear infinite;
+  }
+
+  .header-sub {
+    font-size: 14.5px;
+    color: var(--text-dim);
+    line-height: 1.85;
+    animation: fadeDown 0.7s 0.2s ease both;
+  }
+  .header-sub .point { color: var(--text); font-weight: 600; }
+
+  .scroll-hint {
+    margin-top: 18px;
+    font-size: 22px;
+    animation: bob 1.8s ease-in-out infinite;
+  }
+
+  /* ── 긴급 카운트다운 바 ── */
+  .timer-bar {
+    position: relative; z-index: 1;
+    background: linear-gradient(90deg, rgba(230,57,70,0.16), rgba(155,27,34,0.10));
+    border-top: 1px solid rgba(230,57,70,0.25);
+    border-bottom: 1px solid rgba(230,57,70,0.25);
+    padding: 13px 20px;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    font-size: 14px; font-weight: 700; color: var(--text);
+  }
+  .timer-bar .clock {
+    font-variant-numeric: tabular-nums;
+    font-weight: 800; color: var(--red-light);
+    letter-spacing: 0.5px;
+    background: rgba(0,0,0,0.35);
+    padding: 2px 8px; border-radius: 6px;
+    border: 1px solid rgba(230,57,70,0.3);
+  }
+
+  /* ── 라이브 티커 ── */
+  .ticker {
+    position: relative; z-index: 1;
+    overflow: hidden;
+    background: rgba(3,199,90,0.05);
+    border-bottom: 1px solid rgba(3,199,90,0.12);
+    padding: 8px 0;
+    white-space: nowrap;
+  }
+  .ticker-track {
+    display: inline-block;
+    white-space: nowrap;
+    animation: marquee 22s linear infinite;
+    font-size: 11.5px; color: var(--text-dim);
+  }
+  .ticker-track span { margin: 0 18px; }
+  .ticker-track b { color: var(--naver); font-weight: 600; }
+
+  /* ── 안내 배너 ── */
+  .notice-bar {
+    position: relative; z-index: 1;
+    background: rgba(3,199,90,0.06);
+    border-bottom: 1px solid rgba(3,199,90,0.15);
+    padding: 12px 20px;
+    display: flex; align-items: center; justify-content: center;
+    gap: 8px; font-size: 12.5px; color: var(--text-dim);
+  }
+  .notice-bar span { color: var(--naver); font-weight: 600; }
+
+  /* ── 섹션 공통 ── */
+  .section { position: relative; z-index: 1; padding: 34px 16px; }
+  .section-head { text-align: center; margin-bottom: 20px; }
+  .section-label {
+    font-size: 10px; letter-spacing: 3px; color: var(--red);
+    font-weight: 700; margin-bottom: 6px;
+  }
+  .section-title { font-family: 'Noto Serif KR', serif; font-size: 20px; font-weight: 700; }
+  .section-sub { font-size: 12.5px; color: var(--text-dim); margin-top: 7px; line-height: 1.6; }
+  .divider {
+    width: 40px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--red), transparent);
+    margin: 11px auto 0;
+  }
+
+  /* ── 스크롤 등장 ── */
+  .reveal { opacity: 0; transform: translateY(26px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.in { opacity: 1; transform: none; }
+
+  /* ── 주제 그리드 ── */
+  .topic-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+
+  .topic-btn {
+    position: relative; overflow: hidden;
+    background: var(--dark2);
+    border: 1px solid rgba(230,57,70,0.15);
+    border-radius: 12px;
+    padding: 15px 6px;
+    text-align: center; cursor: pointer; text-decoration: none; color: var(--text);
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    transition: all 0.25s ease;
+  }
+  .topic-btn::after {
+    content: ''; position: absolute; top: 0; left: -120%;
+    width: 60%; height: 100%;
+    background: linear-gradient(100deg, transparent, rgba(255,255,255,0.10), transparent);
+    transition: none;
+  }
+  .topic-btn:hover::after { animation: sweep 0.8s ease; }
+  .topic-btn:active {
+    background: var(--dark3); border-color: var(--red); transform: scale(0.95);
+    box-shadow: 0 0 16px rgba(230,57,70,0.35);
+  }
+  .topic-emoji { font-size: 25px; line-height: 1; transition: transform 0.25s ease; }
+  .topic-btn:hover .topic-emoji { transform: translateY(-3px) scale(1.12); }
+  .topic-name { font-size: 11px; color: var(--text-dim); font-weight: 500; line-height: 1.3; }
+
+ /* ── 기획전 배너 ── */
+.banner-section {
+  position: relative; z-index: 1; padding: 34px 16px;
+  background: var(--dark2);
+  border-top: 1px solid rgba(230,57,70,0.1);
+  border-bottom: 1px solid rgba(230,57,70,0.1);
+}
+.banner-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.banner-item {
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  text-decoration: none; cursor: pointer; transition: all 0.25s ease;
+}
+.banner-item:active { transform: scale(0.95); }
+.banner-thumb {
+  position: relative; width: 100%; height: 150px; border-radius: 10px; overflow: hidden;
+}
+.banner-thumb img { width: 100%; height: 100%; object-fit: cover; object-position: center; }
+.banner-thumb::after {
+  content: ''; position: absolute; top: 0; left: -150%;
+  width: 70%; height: 100%;
+  background: linear-gradient(100deg, transparent, rgba(255,255,255,0.22), transparent);
+  animation: shineLoop 4.5s ease-in-out infinite;
+}
+.banner-item:nth-child(2) .banner-thumb::after { animation-delay: 1.5s; }
+.banner-item:nth-child(3) .banner-thumb::after { animation-delay: 3s; }
+.sale-flag {
+  position: absolute; top: 7px; left: 7px;
+  background: var(--red); color: #fff; font-size: 9px; font-weight: 800;
+  padding: 3px 7px; border-radius: 6px; letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px rgba(230,57,70,0.5);
+}
+.banner-name { font-size: 11px; color: var(--text-dim); text-align: center; font-weight: 500; line-height: 1.4; }
+
+  /* ── 상품 섹션 ── */
+  .products-section { position: relative; z-index: 1; padding: 34px 16px; }
+
+  .product-item {
+    position: relative; overflow: hidden;
+    display: flex; align-items: center; gap: 14px; padding: 16px;
+    background: var(--dark3);
+    border: 1px solid rgba(230,57,70,0.15);
+    border-radius: 14px; margin-bottom: 10px;
+    text-decoration: none; color: var(--text);
+    transition: all 0.25s ease; cursor: pointer;
+  }
+  .product-item.hot { border-color: rgba(230,57,70,0.45); animation: hotGlow 2.6s ease-in-out infinite; }
+  .product-item:active { border-color: var(--naver); transform: scale(0.99); }
+
+  .product-thumb { position: relative; width: 66px; height: 66px; border-radius: 12px; flex-shrink: 0; overflow: hidden; }
+  .product-thumb img { width: 100%; height: 100%; object-fit: cover; border-radius: 12px; }
+  .product-thumb::after {
+    content: ''; position: absolute; top: 0; left: -150%;
+    width: 70%; height: 100%;
+    background: linear-gradient(100deg, transparent, rgba(255,255,255,0.25), transparent);
+    animation: shineLoop 5s ease-in-out infinite;
+  }
+
+  .product-body { flex: 1; min-width: 0; }
+  .product-tag { font-size: 10.5px; color: var(--red-light); font-weight: 700; letter-spacing: 1px; margin-bottom: 3px; }
+  .pick-badge {
+    display: inline-block; margin-bottom: 5px;
+    background: linear-gradient(90deg, var(--red), #b3202c); color: #fff;
+    font-size: 10.5px; font-weight: 800; letter-spacing: .3px;
+    padding: 2px 8px; border-radius: 6px;
+  }
+  .product-name { font-size: 15px; font-weight: 700; margin-bottom: 3px; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .product-desc { font-size: 12.5px; color: var(--text-dim); line-height: 1.5; }
+
+  /* 혜택 배지 — 프로모션(할인·절약)과 신뢰정보 2단 분리 */
+  .product-benefit { margin-top: 9px; }
+  .pb-deal {
+    display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px;
+    background: rgba(230,57,70,.1); border: 1px solid rgba(230,57,70,.25);
+    border-radius: 8px; padding: 6px 9px;
+  }
+  .pb-rate { color: #ff5a67; font-weight: 800; font-size: 16px; line-height: 1; }
+  .pb-save { color: #fff; font-weight: 800; font-size: 12.5px; background: var(--red); padding: 2px 7px; border-radius: 5px; }
+  .pb-was { color: var(--text-dim); font-size: 11.5px; text-decoration: line-through; }
+  .pb-price { color: #fff; font-weight: 800; font-size: 14px; }
+  .pb-trust { margin-top: 6px; font-size: 11.5px; color: var(--text-dim); line-height: 1.5; }
+  .pb-trust b { color: var(--red-light); font-weight: 700; }
+
+  .product-cta {
+    flex-shrink: 0; background: var(--naver); color: white;
+    font-size: 11.5px; font-weight: 700; padding: 10px 14px; border-radius: 7px;
+    white-space: nowrap; display: flex; align-items: center; gap: 4px;
+  }
+
+  .product-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: rgba(192,57,43,0.12); border: 1px solid rgba(192,57,43,0.3);
+    color: #E74C3C; font-size: 10px; font-weight: 700;
+    padding: 2px 7px; border-radius: 20px; margin-top: 5px;
+  }
+  .product-badge::before {
+    content: ''; width: 5px; height: 5px; background: #E74C3C; border-radius: 50%;
+    animation: blink 1s infinite;
+  }
+
+  .naver-notice {
+    text-align: center; font-size: 10px; color: var(--text-dim);
+    margin-top: 14px; line-height: 1.6; padding: 10px;
+    background: rgba(3,199,90,0.04); border: 1px solid rgba(3,199,90,0.1); border-radius: 8px;
+  }
+
+  /* ── 유튜브 CTA ── */
+  .yt-section {
+    position: relative; z-index: 1; padding: 36px 16px; text-align: center;
+    background: var(--dark2); border-top: 1px solid rgba(230,57,70,0.1);
+  }
+  .yt-proof { font-size: 12px; color: var(--text-dim); margin-bottom: 14px; }
+  .yt-proof b { color: var(--red-light); font-weight: 700; }
+  .yt-btn {
+    display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%;
+    background: #FF0000; color: white; font-size: 15px; font-weight: 700;
+    padding: 18px 24px; border-radius: 14px; text-decoration: none; margin-bottom: 10px;
+    box-shadow: 0 4px 20px rgba(255,0,0,0.25); transition: all 0.25s ease;
+  }
+  .yt-btn:active { transform: scale(0.98); }
+  .yt-note { font-size: 11px; color: var(--text-dim); line-height: 1.7; }
+
+  /* ── 후기 ── */
+  .reviews-section { position: relative; z-index: 1; padding: 34px 16px; border-top: 1px solid rgba(230,57,70,0.1); }
+  .review-card { background: var(--dark3); border: 1px solid rgba(230,57,70,0.12); border-radius: 14px; padding: 16px; margin-bottom: 10px; }
+  .review-top { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .review-av {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--red-dark), var(--red));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; color: #fff; flex-shrink: 0;
+  }
+  .review-meta { flex: 1; }
+  .review-nick { font-size: 12px; font-weight: 500; }
+  .review-stars { font-size: 11px; color: var(--red-light); letter-spacing: 1px; }
+  .review-badge {
+    font-size: 10px; color: var(--red-light);
+    background: rgba(230,57,70,0.1); border: 1px solid rgba(230,57,70,0.2);
+    padding: 2px 8px; border-radius: 10px;
+  }
+  .review-text { font-size: 12px; color: var(--text-dim); line-height: 1.7; }
+
+  /* ── 푸터 ── */
+  .footer { position: relative; z-index: 1; text-align: center; padding: 26px 20px 110px; border-top: 1px solid rgba(230,57,70,0.08); }
+  .footer-logo { font-family: 'Noto Serif KR', serif; font-size: 14px; font-weight: 700; color: var(--red-light); margin-bottom: 8px; }
+  .footer-text { font-size: 10px; color: var(--text-dim); line-height: 1.7; }
+
+  /* ── 플로팅 버튼 ── */
+  .float-wrap {
+    position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+    width: 100%; max-width: 480px; padding: 10px 16px 14px;
+    background: linear-gradient(180deg, transparent 0%, rgba(10,10,10,0.97) 35%);
+    z-index: 100;
+  }
+  .float-live {
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    font-size: 11px; color: var(--text-dim); margin-bottom: 8px;
+  }
+  .float-live .live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--red-light); box-shadow: 0 0 8px var(--red-light); animation: blink 1.2s infinite; }
+  .float-live b { color: var(--red-light); font-weight: 700; }
+  .float-cta {
+    position: relative; overflow: hidden;
+    display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%;
+    background: var(--naver); color: white; font-size: 15px; font-weight: 700;
+    padding: 16px 24px; border-radius: 14px; text-decoration: none;
+    box-shadow: 0 4px 24px rgba(3,199,90,0.35); animation: pulse 2.5s infinite;
+  }
+  .float-cta::after {
+    content: ''; position: absolute; top: 0; left: -150%;
+    width: 60%; height: 100%;
+    background: linear-gradient(100deg, transparent, rgba(255,255,255,0.3), transparent);
+    animation: shineLoop 3.5s ease-in-out infinite;
+  }
+
+  /* ── 애니메이션 ── */
+  @keyframes fadeDown { from { opacity: 0; transform: translateY(-16px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes pulse { 0%,100% { box-shadow: 0 4px 24px rgba(3,199,90,0.35); } 50% { box-shadow: 0 4px 36px rgba(3,199,90,0.6); } }
+  @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+  @keyframes shimmer { to { background-position: 250% center; } }
+  @keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
+  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  @keyframes sweep { from { left: -120%; } to { left: 140%; } }
+  @keyframes shineLoop { 0% { left: -150%; } 35%,100% { left: 160%; } }
+  @keyframes glowPulse { 0%,100% { box-shadow: 0 0 0 rgba(230,57,70,0); } 50% { box-shadow: 0 0 16px rgba(230,57,70,0.45); } }
+  @keyframes hotGlow { 0%,100% { box-shadow: 0 0 0 rgba(230,57,70,0); } 50% { box-shadow: 0 0 18px rgba(230,57,70,0.35); } }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+    .reveal { opacity: 1; transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="scroll-bar" id="scrollBar"></div>
+<div class="bg-fx"><div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div></div>
+
+<!-- 헤더 -->
+<header class="header">
+  <div class="header-badge"><span class="dot"></span> 매일 밤, 새로운 심리 처방</div>
+  <h1 class="header-title">
+    당신을 흔드는 건<br><em>성격이 아니라 '심리'</em>입니다
+  </h1>
+  <p class="header-sub">
+    상사 앞에서 작아지는 나, 자꾸 휘둘리는 관계… 🧠<br>
+    <span class="point">이유 없는 일은 없습니다.</span> 매일의 선택을 조종하는<br>
+    진짜 심리를 한 편씩 파헤쳐 드릴게요.
+  </p>
+  <div class="scroll-hint">👇</div>
+</header>
+
+<!-- 긴급 카운트다운 -->
+<div class="timer-bar">
+  🔥 네이버 넣다세일 마감까지 <span class="clock" id="clock">00:00:00</span>
+</div>
+
+<!-- 라이브 티커 -->
+<div class="ticker">
+  <div class="ticker-track" id="ticker"></div>
+</div>
+
+<!-- 안내 배너 -->
+<div class="notice-bar">
+  🛒 <span>멘탈케어 아이템</span>은 네이버 쇼핑 파트너 링크로 연결됩니다
+</div>
+
+<!-- ============================================================
+     주제 선택 (전생시그널의 '12띠 그리드' 자리)
+     ▸ href 값을 각 심리 주제 재생목록 URL로 교체하세요.
+     ▸ "직장인 심리"만 실제 재생목록(직장인 심리 사전)이 들어가 있고,
+       나머지는 PLACEHOLDER 입니다. 재생목록을 만들면 링크를 바꿔주세요.
+     ============================================================ -->
+<section class="section reveal">
+  <div class="section-head">
+    <div class="section-label">SELF-DIAGNOSIS</div>
+    <div class="section-title">지금 내 마음, 어디가 아픈가요? 🩺</div>
+    <div class="section-sub">증상을 누르면 딱 맞는 심리 처방 영상으로 이동해요</div>
+    <div class="divider"></div>
+  </div>
+
+  <div class="topic-grid">
+    <a href="https://www.youtube.com/playlist?list=PLy6nw-fgmkzaCqZwC_AhkY6rxY1m2fRxu" class="topic-btn">
+      <span class="topic-emoji">💼</span>
+      <span class="topic-name">직장인 심리</span>
+    </a>
+    <a href="https://www.youtube.com/playlist?list=PLFL8j9yMpDZE" class="topic-btn">
+      <span class="topic-emoji">👥</span>
+      <span class="topic-name">인간관계</span>
+    </a>
+    <a href="https://www.youtube.com/playlist?list=PLAipj00H1e9k" class="topic-btn">
+      <span class="topic-emoji">👑</span>
+      <span class="topic-name">자존감</span>
+    </a>
+    <a href="https://www.youtube.com/playlist?list=PLd-5E-8h3gn0" class="topic-btn">
+      <span class="topic-emoji">🌀</span>
+      <span class="topic-name">가스라이팅</span>
+    </a>
+  </div>
+</section>
+
+<!-- ============================================================
+     멘탈케어 아이템 — 증상별 4섹션 (총 10개)
+     ▸ 각 카드: href = naver.me 제휴링크, img src = 상품 이미지(imgur 등)
+     ▸ NAVER_LINK_* / IMG_URL_* 는 모두 PLACEHOLDER → 실제 값으로 교체.
+     ▸ 구매중 인원(data-target)은 자유롭게 조정. 효능·치료 주장 대신
+       생활·기분 표현 유지(네이버 제휴 + 건기식 광고 규제 회피).
+     ============================================================ -->
+
+<!-- PRODUCTS_START -->
+<section class="products-section reveal" >
+  <div class="section-head">
+    <div class="section-label">FOR SLEEP</div>
+    <div class="section-title">🌙 잠 못 드는 밤</div>
+    <div class="section-sub">누워도 멈추지 않는 생각, 오늘 밤은 푹 자고 싶다면</div>
+    <div class="divider"></div>
+  </div>
+
+ <a href="https://naver.me/F3EuBcjA" class="product-item hot" target="_blank" rel="noopener">
+  <div class="product-thumb"><img src="img/sleep1.png" alt="깊은 잠 베개" loading="lazy"></div>
+  <div class="product-body">
+    <div class="pick-badge">🧠 나쁜심리학 PICK</div>
+    <div class="product-tag">BEST · 수면</div>
+    <div class="product-name">깊은 잠 베개</div>
+    <div class="product-desc">뒤척임 없이 아침까지, 목·어깨가 편한 밤</div>
+    <div class="product-benefit"><div class="pb-deal"><span class="pb-rate">48%↓</span><span class="pb-save">91,000원 아낌</span><span class="pb-was">186,000원</span></div><div class="pb-trust">⭐<b>4.66</b> 리뷰 21,980 · 공식스토어 · 네이버페이 적립</div></div>
+    <div class="product-badge"><span class="count" data-target="940">0</span>명이 구매중</div>
+  </div>
+  <div class="product-cta">N 쇼핑</div>
+</a>
+
+ <a href="https://naver.me/FJOvLeSM" class="product-item" target="_blank" rel="noopener">
+  <div class="product-thumb"><img src="img/sleep2.jpg" alt="거북목 경추 베개" loading="lazy"></div>
+  <div class="product-body">
+    <div class="product-tag">인기 · 수면</div>
+    <div class="product-name">거북목 경추 베개</div>
+    <div class="product-desc">종일 굳은 목, 밤엔 바르게 눕히는 습관</div>
+    <div class="product-benefit"><div class="pb-deal"><span class="pb-rate">41%↓</span><span class="pb-save">70,000원 아낌</span><span class="pb-was">169,000원</span></div><div class="pb-trust">⭐<b>4.84</b> 리뷰 2,505 · 공식스토어 · 네이버페이 적립</div></div>
+    <div class="product-badge"><span class="count" data-target="167">0</span>명이 구매중</div>
+  </div>
+  <div class="product-cta">N 쇼핑</div>
+</a>
+
+ <a href="https://naver.me/xxo9JS1v" class="product-item" target="_blank" rel="noopener">
+  <div class="product-thumb"><img src="img/sleep3.jpg" alt="안고 자는 바디필로우" loading="lazy"></div>
+  <div class="product-body">
+    <div class="product-tag">인기 · 수면</div>
+    <div class="product-name">안고 자는 바디필로우</div>
+    <div class="product-desc">끌어안고 스르륵, 혼자여도 편안한 밤</div>
+    <div class="product-benefit"><div class="pb-deal"><span class="pb-rate">37%↓</span><span class="pb-save">36,900원 아낌</span><span class="pb-was">99,000원</span></div><div class="pb-trust">⭐<b>4.76</b> 리뷰 7,011 · 공식스토어 · 네이버페이 적립</div></div>
+    <div class="product-badge"><span class="count" data-target="467">0</span>명이 구매중</div>
+  </div>
+  <div class="product-cta">N 쇼핑</div>
+</a>
+
+ <a href="https://naver.me/5Gc0SFyS" class="product-item" target="_blank" rel="noopener">
+  <div class="product-thumb"><img src="img/sleep4.jpg" alt="저소음 무선 선풍기" loading="lazy"></div>
+  <div class="product-body">
+    <div class="product-tag">NEW · 수면</div>
+    <div class="product-name">저소음 무선 선풍기</div>
+    <div class="product-desc">소리에 예민한 밤, 바람 소리까지 재우다</div>
+    <div class="product-benefit"><div class="pb-deal"><span class="pb-price">178,000원</span></div><div class="pb-trust">⭐<b>4.85</b> 리뷰 7,912 · 공식스토어 · 네이버페이 적립</div></div>
+    <div class="product-badge"><span class="count" data-target="527">0</span>명이 구매중</div>
+  </div>
+  <div class="product-cta">N 쇼핑</div>
+</a>
+
+ <a href="https://naver.me/5yheDSWx" class="product-item" target="_blank" rel="noopener">
+  <div class="product-thumb"><img src="img/sleep5.png" alt="냉감 여름 차렵이불" loading="lazy"></div>
+  <div class="product-body">
+    <div class="product-tag">여름 · 수면</div>
+    <div class="product-name">냉감 여름 차렵이불</div>
+    <div class="product-desc">열대야에도 서늘하게, 뒤척임 줄이는 이불</div>
+    <div class="product-benefit"><div class="pb-deal"><span class="pb-rate">55%↓</span><span class="pb-save">38,530원 아낌</span><span class="pb-was">68,900원</span></div><div class="pb-trust">⭐<b>4.72</b> 리뷰 6,147 · 공식스토어 · 네이버페이 적립</div></div>
+    <div class="product-badge"><span class="count" data-target="409">0</span>명이 구매중</div>
+  </div>
+  <div class="product-cta">N 쇼핑</div>
+</a>
+</section>
+
+<section class="products-section reveal" style="background:var(--dark2);border-top:1px solid rgba(230,57,70,0.1);border-bottom:1px solid rgba(230,57,70,0.1);">
+  <div class="section-head">
+    <div class="section-label">FOR STRESS</div>
+    <div class="section-title">🔥 욱하고 예민한 하루</div>
+    <div class="section-sub">사소한 일에도 날이 서고 더위에 지친다면</div>
+    <div class="divider"></div>
+  </div>
+
+ <a href="https://naver.me/xpjvltwG" class="product-item hot" target="_blank" rel="noopener">
+  <div class="product-thumb"><img src="img/stress1.jpg" alt="냉감 쿨링 침대패드" loading="lazy"></div>
+  <div class="product-body">
+    <div class="pick-badge">🧠 나쁜심리학 PICK</div>
+    <div class="product-tag">여름 · 쿨링</div>
+    <div class="product-name">냉감 쿨링 침대패드</div>
+    <div class="product-desc">더위에 짜증나는 밤, 등부터 시원하게</div>
+    <div class="product-benefit"><div class="pb-deal"><span class="pb-rate">45%↓</span><span class="pb-save">27,100원 아낌</span><span class="pb-was">60,000원</span></div><div class="pb-trust">⭐<b>4.79</b> 리뷰 1,962 · 공식스토어 · 네이버페이 적립</div></div>
+    <div class="product-badge"><span class="count" data-target="130">0</span>명이 구매중</div>
+  </div>
+  <div class="product-cta">N 쇼핑</div>
+</a>
+
+ <a href="https://naver.me/50BcARxb" class="product-item" target="_blank" rel="noopener">
+  <div class="product-thumb"><img src="img/stress2.jpg" alt="휴대용 손선풍기" loading="lazy"></div>
+  <div class="product-body">
+    <div class="product-tag">인기 · 쿨링</div>
+    <div class="product-name">휴대용 손선풍기</div>
+    <div class="product-desc">치미는 열, 출퇴근길 바로 식히기</div>
+    <div class="product-benefit"><div class="pb-deal"><span class="pb-rate">27%↓</span><span class="pb-save">11,010원 아낌</span><span class="pb-was">39,400원</span></div><div class="pb-trust">⭐<b>4.78</b> 리뷰 7,495 · 공식스토어 · 네이버페이 적립</div></div>
+    <div class="product-badge"><span class="count" data-target="499">0</span>명이 구매중</div>
+  </div>
+  <div class="product-cta">N 쇼핑</div>
+</a>
+</section>
+
+<section class="products-section reveal" >
+  <div class="section-head">
+    <div class="section-label">FOR ENERGY</div>
+    <div class="section-title">🔋 번아웃·무기력</div>
+    <div class="section-sub">쉬어도 안 풀리는 피로, 눈부터 몸까지 챙기기</div>
+    <div class="divider"></div>
+  </div>
+
+ <a href="https://naver.me/xF4tj3oB" class="product-item hot" target="_blank" rel="noopener">
+  <div class="product-thumb"><img src="img/energy1.jpg" alt="블루라이트 차단 안경" loading="lazy"></div>
+  <div class="product-body">
+    <div class="pick-badge">🧠 나쁜심리학 PICK</div>
+    <div class="product-tag">BEST · 눈피로</div>
+    <div class="product-name">블루라이트 차단 안경</div>
+    <div class="product-desc">종일 모니터로 뻑뻑한 눈, 부담 덜기</div>
+    <div class="product-benefit"><div class="pb-deal"><span class="pb-rate">56%↓</span><span class="pb-save">182,000원 아낌</span><span class="pb-was">320,000원</span></div><div class="pb-trust">⭐<b>4.81</b> 리뷰 1,090 · 네이버페이 적립</div></div>
+    <div class="product-badge"><span class="count" data-target="72">0</span>명이 구매중</div>
+  </div>
+  <div class="product-cta">N 쇼핑</div>
+</a>
+
+ <a href="https://naver.me/5qLoCIMV" class="product-item" target="_blank" rel="noopener">
+  <div class="product-thumb"><img src="img/energy2.jpg" alt="루테인 눈 영양" loading="lazy"></div>
+  <div class="product-body">
+    <div class="product-tag">인기 · 눈건강</div>
+    <div class="product-name">루테인 눈 영양</div>
+    <div class="product-desc">침침하고 피로한 눈, 매일 챙기는 습관</div>
+    <div class="product-benefit"><div class="pb-deal"><span class="pb-rate">58%↓</span><span class="pb-save">176,000원 아낌</span><span class="pb-was">300,000원</span></div><div class="pb-trust">⭐<b>4.84</b> 리뷰 2,143 · 공식스토어 · 네이버페이 적립</div></div>
+    <div class="product-badge"><span class="count" data-target="142">0</span>명이 구매중</div>
+  </div>
+  <div class="product-cta">N 쇼핑</div>
+</a>
+
+ <a href="https://naver.me/FYrCp5QJ" class="product-item" target="_blank" rel="noopener">
+  <div class="product-thumb"><img src="img/energy3.jpg" alt="컨디션 관리 부스터" loading="lazy"></div>
+  <div class="product-body">
+    <div class="product-tag">인기 · 관리</div>
+    <div class="product-name">컨디션 관리 부스터</div>
+    <div class="product-desc">무너진 컨디션, 다시 관리 모드로</div>
+    <div class="product-benefit"><div class="pb-deal"><span class="pb-rate">39%↓</span><span class="pb-save">86,000원 아낌</span><span class="pb-was">220,000원</span></div><div class="pb-trust">⭐<b>4.86</b> 리뷰 5,831 · 공식스토어 · 네이버페이 적립</div></div>
+    <div class="product-badge"><span class="count" data-target="388">0</span>명이 구매중</div>
+  </div>
+  <div class="product-cta">N 쇼핑</div>
+</a>
+
+ <a href="https://naver.me/5Z1Awicj" class="product-item" target="_blank" rel="noopener">
+  <div class="product-thumb"><img src="img/energy4.jpg" alt="흑염소 진액" loading="lazy"></div>
+  <div class="product-body">
+    <div class="product-tag">BEST · 활력</div>
+    <div class="product-name">흑염소 진액</div>
+    <div class="product-desc">축 처지는 기력, 진하게 채우기</div>
+    <div class="product-benefit"><div class="pb-deal"><span class="pb-rate">21%↓</span><span class="pb-save">50,000원 아낌</span><span class="pb-was">229,900원</span></div><div class="pb-trust">⭐<b>4.86</b> 리뷰 19,887 · 공식스토어 · 네이버페이 적립</div></div>
+    <div class="product-badge"><span class="count" data-target="940">0</span>명이 구매중</div>
+  </div>
+  <div class="product-cta">N 쇼핑</div>
+</a>
+
+ <a href="https://naver.me/GxrDmvpy" class="product-item" target="_blank" rel="noopener">
+  <div class="product-thumb"><img src="img/energy5.jpg" alt="피부·면역 유산균" loading="lazy"></div>
+  <div class="product-body">
+    <div class="product-tag">인기 · 장건강</div>
+    <div class="product-name">피부·면역 유산균</div>
+    <div class="product-desc">속부터 컨디션, 매일 한 캡슐</div>
+    <div class="product-benefit"><div class="pb-deal"><span class="pb-rate">54%↓</span><span class="pb-save">70,600원 아낌</span><span class="pb-was">130,500원</span></div><div class="pb-trust">⭐<b>4.83</b> 리뷰 3,026 · 공식스토어 · 네이버페이 적립</div></div>
+    <div class="product-badge"><span class="count" data-target="201">0</span>명이 구매중</div>
+  </div>
+  <div class="product-cta">N 쇼핑</div>
+</a>
+</section>
+
+<section class="products-section reveal" style="background:var(--dark2);border-top:1px solid rgba(230,57,70,0.1);border-bottom:1px solid rgba(230,57,70,0.1);">
+  <div class="section-head">
+    <div class="section-label">FOR YOURSELF</div>
+    <div class="section-title">👑 자존감·셀프케어</div>
+    <div class="section-sub">거울 앞 5분이 하루의 기분을 바꾼다면</div>
+    <div class="divider"></div>
+  </div>
+
+ <a href="https://naver.me/FqI6kf4W" class="product-item hot" target="_blank" rel="noopener">
+  <div class="product-thumb"><img src="img/care1.jpg" alt="JMW 고속 드라이기" loading="lazy"></div>
+  <div class="product-body">
+    <div class="pick-badge">🧠 나쁜심리학 PICK</div>
+    <div class="product-tag">BEST · 셀프케어</div>
+    <div class="product-name">JMW 고속 드라이기</div>
+    <div class="product-desc">거울 앞 5분, 기분까지 바뀌는 스타일링</div>
+    <div class="product-benefit"><div class="pb-deal"><span class="pb-rate">37%↓</span><span class="pb-save">60,000원 아낌</span><span class="pb-was">159,000원</span></div><div class="pb-trust">⭐<b>4.86</b> 리뷰 11,895 · 네이버페이 적립</div></div>
+    <div class="product-badge"><span class="count" data-target="793">0</span>명이 구매중</div>
+  </div>
+  <div class="product-cta">N 쇼핑</div>
+</a>
+
+ <a href="https://naver.me/GgU3Vgpp" class="product-item" target="_blank" rel="noopener">
+  <div class="product-thumb"><img src="img/care2.jpg" alt="JMW 케어부스터 드라이기" loading="lazy"></div>
+  <div class="product-body">
+    <div class="product-tag">인기 · 셀프케어</div>
+    <div class="product-name">JMW 케어부스터 드라이기</div>
+    <div class="product-desc">머릿결이 사는 순간, 자신감도 산다</div>
+    <div class="product-benefit"><div class="pb-deal"><span class="pb-rate">39%↓</span><span class="pb-save">59,100원 아낌</span><span class="pb-was">149,000원</span></div><div class="pb-trust">⭐<b>4.91</b> 리뷰 1,347 · 공식스토어 · 네이버페이 적립</div></div>
+    <div class="product-badge"><span class="count" data-target="89">0</span>명이 구매중</div>
+  </div>
+  <div class="product-cta">N 쇼핑</div>
+</a>
+
+ <a href="https://naver.me/5refQyBA" class="product-item" target="_blank" rel="noopener">
+  <div class="product-thumb"><img src="img/care3.jpg" alt="JMW 스테디셀러 드라이기" loading="lazy"></div>
+  <div class="product-body">
+    <div class="product-tag">인기 · 셀프케어</div>
+    <div class="product-name">JMW 스테디셀러 드라이기</div>
+    <div class="product-desc">가장 많이 팔린 그 드라이기</div>
+    <div class="product-benefit"><div class="pb-deal"><span class="pb-rate">34%↓</span><span class="pb-save">45,000원 아낌</span><span class="pb-was">130,000원</span></div><div class="pb-trust">⭐<b>4.88</b> 리뷰 13,055 · 네이버페이 적립</div></div>
+    <div class="product-badge"><span class="count" data-target="870">0</span>명이 구매중</div>
+  </div>
+  <div class="product-cta">N 쇼핑</div>
+</a>
+
+ <a href="https://naver.me/GxrDmvTP" class="product-item" target="_blank" rel="noopener">
+  <div class="product-thumb"><img src="img/care4.jpg" alt="UV 차단 선글라스" loading="lazy"></div>
+  <div class="product-body">
+    <div class="product-tag">NEW · 스타일</div>
+    <div class="product-name">UV 차단 선글라스</div>
+    <div class="product-desc">눈부심 없이 당당하게, 인상까지 UP</div>
+    <div class="product-benefit"><div class="pb-deal"><span class="pb-rate">60%↓</span><span class="pb-save">60,100원 아낌</span><span class="pb-was">100,000원</span></div><div class="pb-trust">⭐<b>4.8</b> 리뷰 946 · 공식스토어 · 네이버페이 적립</div></div>
+    <div class="product-badge"><span class="count" data-target="63">0</span>명이 구매중</div>
+  </div>
+  <div class="product-cta">N 쇼핑</div>
+</a>
+
+ <a href="https://naver.me/G1pytrqs" class="product-item" target="_blank" rel="noopener">
+  <div class="product-thumb"><img src="img/care5.jpg" alt="JMW 무선 고데기" loading="lazy"></div>
+  <div class="product-body">
+    <div class="product-tag">인기 · 셀프케어</div>
+    <div class="product-name">JMW 무선 고데기</div>
+    <div class="product-desc">언제든 손질, 흐트러진 나를 다잡기</div>
+    <div class="product-benefit"><div class="pb-deal"><span class="pb-rate">30%↓</span><span class="pb-save">30,000원 아낌</span><span class="pb-was">99,000원</span></div><div class="pb-trust">⭐<b>4.71</b> 리뷰 1,294 · 공식스토어 · 네이버페이 적립</div></div>
+    <div class="product-badge"><span class="count" data-target="86">0</span>명이 구매중</div>
+  </div>
+  <div class="product-cta">N 쇼핑</div>
+</a>
+  <div class="naver-notice">
+    본 페이지의 상품 링크는 네이버 쇼핑 파트너 링크로,<br>
+    구매 시 일정 수수료가 발생할 수 있습니다.
+  </div>
+</section>
+<!-- PRODUCTS_END -->
+
+<!-- ============================================================
+     유튜브 CTA
+     ▸ href 를 나쁜심리학 채널 주소로 교체하세요 (예: @나쁜심리학)
+     ============================================================ -->
+<section class="yt-section reveal">
+  <p class="yt-proof">이미 <b>수만 명</b>이 매일 밤 심리 처방을 받고 있어요</p>
+  <a href="https://www.youtube.com/@나쁜심리학" class="yt-btn" target="_blank">
+    ▶ 구독하고 매일 심리 처방 받기
+  </a>
+  <p class="yt-note">
+    알림 설정만 해두면, 사람 마음을 꿰뚫는 심리 이야기를<br>
+    매일 밤 가장 먼저 받아보실 수 있어요 🔔
+  </p>
+</section>
+
+<!-- 후기 -->
+<section class="reviews-section reveal">
+  <div class="section-head">
+    <div class="section-label">REVIEWS</div>
+    <div class="section-title">💬 시청자 후기</div>
+    <div class="divider"></div>
+  </div>
+
+  <div class="review-card">
+    <div class="review-top">
+      <div class="review-av">직</div>
+      <div class="review-meta">
+        <div class="review-nick">k****2</div>
+        <div class="review-stars">★★★★★</div>
+      </div>
+      <span class="review-badge">직장인 심리</span>
+    </div>
+    <div class="review-text">왜 그 사람 앞에서만 작아지는지 영상 보고 정확히 알았어요. 다음 날 회의에서 처음으로 할 말을 다 했습니다.</div>
+  </div>
+
+  <div class="review-card">
+    <div class="review-top">
+      <div class="review-av">관</div>
+      <div class="review-meta">
+        <div class="review-nick">j****8</div>
+        <div class="review-stars">★★★★★</div>
+      </div>
+      <span class="review-badge">인간관계</span>
+    </div>
+    <div class="review-text">가스라이팅 편 보고 소름 돋았어요. 제가 몇 년째 당하고 있던 게 그거였더라고요. 거리 두기 시작했습니다.</div>
+  </div>
+
+  <div class="review-card">
+    <div class="review-top">
+      <div class="review-av">자</div>
+      <div class="review-meta">
+        <div class="review-nick">p****5</div>
+        <div class="review-stars">★★★★★</div>
+      </div>
+      <span class="review-badge">자존감</span>
+    </div>
+    <div class="review-text">재미로 봤는데 내 얘기라 뜨끔했어요. 남 눈치 보느라 정작 내 마음을 안 챙겼다는 말이 딱 맞았습니다.</div>
+  </div>
+</section>
+
+<!-- 푸터 -->
+<footer class="footer">
+  <div class="footer-logo">나쁜심리학</div>
+  <div class="footer-text">
+    일상 속 사람의 마음을 날카롭게 파헤치는 채널입니다<br>
+    본 콘텐츠는 엔터테인먼트·정보 제공 목적으로 제작되었습니다<br><br>
+    © 2026 나쁜심리학. All rights reserved.
+  </div>
+</footer>
+
+<!-- ============================================================
+     플로팅 CTA — 아래 links 배열에 실제 naver.me 링크를 넣으면
+     버튼을 누를 때마다 무작위 상품으로 연결됩니다.
+     ============================================================ -->
+<div class="float-wrap">
+  <div class="float-live"><span class="live-dot"></span> 지금 <b id="liveCount">27</b>명이 함께 보는 중</div>
+  <a href="#" class="float-cta" id="floatCta" target="_blank">
+    🧠 오늘의 멘탈케어 아이템 보기
+  </a>
+</div>
+
+<script>
+  /* ── 플로팅 버튼이 무작위로 연결할 대표 상품 링크 (실제 naver.me 로 교체) ── */
+  const links = [
+    "https://naver.me/F3EuBcjA",
+    "https://naver.me/xpjvltwG",
+    "https://naver.me/xF4tj3oB",
+    "https://naver.me/FqI6kf4W"
+  ];
+  document.getElementById("floatCta").href = links[Math.floor(Math.random() * links.length)];
+
+  /* ── 카운트다운 (넣다세일 종료 시각까지, KST) ──
+     ▸ 아래 SALE_END 날짜만 실제 넣다세일 종료일로 바꾸면 됩니다.
+     ▸ 종료가 지나면 타이머 배너가 자동으로 사라집니다(정직한 긴급성). */
+  const SALE_END = new Date("2026-07-05T23:59:59+09:00");
+  const clock = document.getElementById("clock");
+  const timerBar = document.querySelector(".timer-bar");
+  function tick() {
+    const now = new Date();
+    let d = Math.floor((SALE_END - now) / 1000);
+    if (d <= 0) { if (timerBar) timerBar.style.display = "none"; return; }
+    const days = Math.floor(d / 86400);
+    const h = String(Math.floor((d % 86400) / 3600)).padStart(2, "0");
+    const m = String(Math.floor((d % 3600) / 60)).padStart(2, "0");
+    const s = String(d % 60).padStart(2, "0");
+    clock.textContent = (days > 0 ? days + "일 " : "") + `${h}:${m}:${s}`;
+  }
+  tick(); setInterval(tick, 1000);
+
+  /* ── 라이브 티커 ── */
+  const names = ["김O민","이O준","박O서","최O아","정O우","강O은","조O현","윤O지","장O호","임O진"];
+  const acts = ["수면템을 담았어요","스트레스 완화템을 확인했어요","마사지기를 장바구니에 넣었어요","심리 베스트셀러를 담았어요","심리 처방 영상을 정주행 중이에요","구독을 눌렀어요"];
+  const tk = document.getElementById("ticker");
+  function buildTicker() {
+    let html = "";
+    for (let i = 0; i < 8; i++) {
+      const n = names[Math.floor(Math.random()*names.length)];
+      const a = acts[Math.floor(Math.random()*acts.length)];
+      html += `<span>🔔 방금 <b>${n}</b>님이 ${a}</span>`;
+    }
+    return html;
+  }
+  tk.innerHTML = buildTicker() + buildTicker();
+
+  /* ── 라이브 인원 살짝 변동 ── */
+  const lc = document.getElementById("liveCount");
+  setInterval(() => {
+    let v = parseInt(lc.textContent, 10) + (Math.floor(Math.random()*7) - 3);
+    v = Math.max(12, Math.min(63, v));
+    lc.textContent = v;
+  }, 2600);
+
+  /* ── 스크롤 진행 바 ── */
+  const sb = document.getElementById("scrollBar");
+  window.addEventListener("scroll", () => {
+    const h = document.documentElement.scrollHeight - window.innerHeight;
+    sb.style.width = (h > 0 ? (window.scrollY / h) * 100 : 0) + "%";
+  }, { passive: true });
+
+  /* ── 스크롤 등장 + 숫자 카운트업 ── */
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      e.target.classList.add("in");
+      e.target.querySelectorAll(".count").forEach(c => {
+        const target = +c.dataset.target; let cur = 0;
+        const step = Math.max(1, Math.floor(target / 45));
+        const run = () => { cur += step; if (cur >= target) { c.textContent = target; } else { c.textContent = cur; requestAnimationFrame(run); } };
+        run();
+      });
+      io.unobserve(e.target);
+    });
+  }, { threshold: 0.18 });
+  document.querySelectorAll(".reveal").forEach(el => io.observe(el));
+</script>
+
+</body>
+</html>
