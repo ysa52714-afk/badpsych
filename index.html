@@ -463,8 +463,12 @@
   /* 누적 리뷰 소셜프루프 바 */
   .proofbar { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin:0 16px 8px; padding:15px 12px; background:linear-gradient(90deg, rgba(230,57,70,.13), rgba(155,27,34,.07)); border:1px solid rgba(230,57,70,.32); border-radius:12px; }
   .proofbar .pf { text-align:center; min-width:92px; }
-  .proofbar .pf b { display:block; color:var(--red-light); font-size:21px; font-weight:800; font-family:'Noto Serif KR',serif; line-height:1.2; }
+  .proofbar .pf b { display:block; color:var(--red-light); font-size:21px; font-weight:800; font-family:'Noto Serif KR',serif; line-height:1.2; font-variant-numeric:tabular-nums; }
   .proofbar .pf span { font-size:11px; color:var(--text-dim); }
+  /* ── 로티 스킬 반영: A 카운트업(tabular) / B 타이머 shimmer / C CTA 화살표 — 네이티브·0KB ── */
+  .shine-phrase { font-style:normal; background:linear-gradient(110deg,var(--red-light) 0%,#fff 25%,var(--red-light) 50%,var(--red) 75%,var(--red-light) 100%); background-size:250% auto; -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; animation:shimmer 5s linear infinite; }
+  .cta-arrow { display:inline-block; animation:ctaNudge 1.4s ease-in-out infinite; }
+  @keyframes ctaNudge { 0%,100% { transform:translateX(0); } 50% { transform:translateX(5px); } }
 /* NP_STYLE_END */
 </style>
 </head>
@@ -532,9 +536,9 @@
 <!-- PRODUCTS_START -->
 <div class="bridge"><div class="bridge-line">마음의 <em>원인</em>을 알았다면,<br>이제 바꿀 차례입니다</div><div class="bridge-sub">지친 하루를 다독일 멘탈케어템,<br><b>나쁜심리학이 직접 골랐습니다</b></div><div class="bridge-arrow">▾</div></div>
 
-<div class="proofbar"><div class="pf"><b>115,526+</b><span>검증된 누적 리뷰</span></div><div class="pf"><b>⭐4.81</b><span>평균 평점</span></div><div class="pf"><b>17종</b><span>엄선한 멘탈케어템</span></div></div>
+<div class="proofbar reveal"><div class="pf"><b class="count" data-target="115526" data-group="1" data-suffix="+">115,526+</b><span>검증된 누적 리뷰</span></div><div class="pf"><b class="count" data-target="4.81" data-decimals="2" data-prefix="⭐">⭐4.81</b><span>평균 평점</span></div><div class="pf"><b class="count" data-target="17" data-suffix="종">17종</b><span>엄선한 멘탈케어템</span></div></div>
 
-<div class="timer-bar">🔒 <b style="color:var(--red-light)">여기서만 열리는</b> 나쁜심리학 멘탈케어 특가 · 마감 <span class="clock" id="clock">00:00:00</span></div>
+<div class="timer-bar">🔒 <b class="shine-phrase">여기서만 열리는</b> 나쁜심리학 멘탈케어 특가 · 마감 <span class="clock" id="clock">00:00:00</span></div>
 
 <div class="ticker"><div class="ticker-track" id="ticker"></div></div>
 
@@ -887,7 +891,7 @@
 <div class="float-wrap">
   <div class="float-live"><span class="live-dot"></span> 지금 <b id="liveCount">27</b>명이 함께 보는 중</div>
   <a href="#" class="float-cta" id="floatCta" target="_blank">
-    🧠 오늘의 멘탈케어 아이템 보기
+    🧠 오늘의 멘탈케어 아이템 보기 <span class="cta-arrow">→</span>
   </a>
 </div>
 
@@ -955,10 +959,25 @@
       if (!e.isIntersecting) return;
       e.target.classList.add("in");
       e.target.querySelectorAll(".count").forEach(c => {
-        const target = +c.dataset.target; let cur = 0;
-        const step = Math.max(1, Math.floor(target / 45));
-        const run = () => { cur += step; if (cur >= target) { c.textContent = target; } else { c.textContent = cur; requestAnimationFrame(run); } };
-        run();
+        const target = parseFloat(c.dataset.target);
+        const dec = parseInt(c.dataset.decimals || "0", 10);
+        const pre = c.dataset.prefix || "", suf = c.dataset.suffix || "";
+        const grp = c.dataset.group === "1";
+        const fmt = v => {
+          const n = grp
+            ? Number(v.toFixed(dec)).toLocaleString("en-US", { minimumFractionDigits: dec, maximumFractionDigits: dec })
+            : v.toFixed(dec);
+          return pre + n + suf;
+        };
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) { c.textContent = fmt(target); return; }
+        const dur = 1100, t0 = performance.now();
+        const ease = t => 1 - Math.pow(1 - t, 3); /* settle-soft ease-out, 바운스 없음 */
+        const frame = now => {
+          const p = Math.min(1, (now - t0) / dur);
+          c.textContent = fmt(target * ease(p));
+          if (p < 1) requestAnimationFrame(frame); else c.textContent = fmt(target);
+        };
+        requestAnimationFrame(frame);
       });
       io.unobserve(e.target);
     });
